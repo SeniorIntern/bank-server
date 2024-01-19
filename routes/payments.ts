@@ -4,6 +4,8 @@ import { Payment } from '../models/payment'
 import { User } from '../models/user';
 import { parseInt } from 'lodash';
 import auth from '../middleware/auth';
+import validateId from '../middleware/validateId';
+import mongoose from 'mongoose';
 
 router.get('/', async (req, res) => {
   const payments = await Payment.find().populate('party')
@@ -17,7 +19,7 @@ router.get('/all', auth, async (req, res) => {
   res.status(200).send(payment);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateId, async (req, res) => {
   const payment = await Payment.find({ party: req.params.id }).populate('party').sort({ date: -1 }).limit(5)
   if (!payment) return res.status(200).send('No payment found');
   res.status(200).send(payment);
@@ -25,6 +27,11 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const { sender, receiver, amount, date } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(sender))
+    return res.status(404).send('Invalid sender ID.');
+  if (!mongoose.Types.ObjectId.isValid(receiver))
+    return res.status(404).send('Invalid receiver ID.');
 
   let party1 = await User.findById(sender)
   if (!party1) return res.status(400).send('Invalid Sender Id')
