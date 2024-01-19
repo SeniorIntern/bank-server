@@ -12,13 +12,13 @@ router.get('/', async (req, res) => {
 
 router.get('/all', auth, async (req, res) => {
   // @ts-ignore
-  const payment = await Payment.find({ party: req.user._id }).populate('party').sort('date').limit(5)
+  const payment = await Payment.find({ party: req.user._id }).populate('party').sort({ date: -1 }).limit(5);
   if (!payment) return res.status(200).send('No payment found');
   res.status(200).send(payment);
 });
 
 router.get('/:id', async (req, res) => {
-  const payment = await Payment.find({ party: req.params.id }).populate('party').sort('date').limit(5)
+  const payment = await Payment.find({ party: req.params.id }).populate('party').sort({ date: -1 }).limit(5)
   if (!payment) return res.status(200).send('No payment found');
   res.status(200).send(payment);
 });
