@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
   balance: {
     type: Number,
     required: true,
-    minlength: 0,
+    default: 0
   },
   gender: {
     type: String,
@@ -46,7 +46,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  countryOfBirth: {
+  cob: {
+    type: String,
+    required: true,
+  },
+  dob: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  address: {
     type: String,
     required: true,
   }
@@ -72,7 +84,6 @@ const schema = z.object({
   email: z.string().email().min(5).max(1024),
   password: z.string().min(5).max(1024),
   accountType: z.string(),
-  balance: z.number().min(3)
 })
 
 function validateUser(user: z.infer<typeof schema>) {
